@@ -36,7 +36,7 @@ namespace InvSee
 		public PMain(Main game)
 			: base(game)
 		{
-
+			Order = 10;
 		}
 
 		protected override void Dispose(bool disposing)
