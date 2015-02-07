@@ -36,7 +36,8 @@ namespace InvSee
 		public PMain(Main game)
 			: base(game)
 		{
-			Order = 10;
+			// A lower order ensures commands are replaced properly
+			Order--;
 		}
 
 		protected override void Dispose(bool disposing)
