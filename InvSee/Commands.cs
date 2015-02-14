@@ -6,6 +6,7 @@ using InvSee.Extensions;
 using TShockAPI;
 using TShockAPI.DB;
 using Terraria;
+using System.Text.RegularExpressions;
 
 namespace InvSee
 {
@@ -35,39 +36,72 @@ namespace InvSee
 			}
 			else
 			{
-				string playerName = string.Join(" ", args.Parameters);
-				var playerList = TShock.Utils.FindPlayer(playerName);
+				Regex regex = new Regex(@"^\w+ (.+)$");
+				Match match = regex.Match(args.Message);
+				string playerName = match.Groups[1].Value;
 
-				if (playerList == null || playerList.Count < 1)
-					args.Player.SendErrorMessage("Invalid player!");
-				else if (playerList.Count > 1)
-					TShock.Utils.SendMultipleMatchError(args.Player, playerList);
+				int acctid = 0;
+				string name = "";
+				var players = TShock.Utils.FindPlayer(playerName);
+				if (players.Count == 0)
+				{
+					if (!args.Player.Group.HasPermission(Permissions.InvSeeUser))
+					{
+						args.Player.SendErrorMessage("You can't copy users!");
+						return;
+					}
+
+					User user = TShock.Users.GetUserByName(playerName);
+					if (user == null)
+					{
+						args.Player.SendErrorMessage("Invalid player or account '{0}'!", playerName);
+						return;
+					}
+					else
+					{
+						acctid = user.ID;
+						name = user.Name;
+					}
+				}
+				else if (players.Count > 1)
+				{
+					TShock.Utils.SendMultipleMatchError(args.Player, players);
+					return;
+				}
 				else
 				{
-					try
-					{
-						// Setting up backup data
-						if (info.Backup == null)
-						{
-							info.Backup = new PlayerData(args.Player);
-							info.Backup.CopyCharacter(args.Player);
-						}
+					acctid = players[0].UserID;
+					name = players[0].Name;
+				}
 
-						TSPlayer player = playerList[0];
-						player.PlayerData.RestoreCharacter(args.Player);
-						args.Player.SendSuccessMessage("[InvSee] Copied {0}'s inventory.", player.Name);
-					}
-					catch (Exception ex)
+				try
+				{
+					// Setting up backup data
+					if (info.Backup == null)
 					{
-						// In case it fails, everything is restored
-						if (info.Backup != null)
-						{
-							info.Backup.RestoreCharacter(args.Player);
-							info.Backup = null;
-						}
-						Log.ConsoleError(ex.ToString());
-						args.Player.SendErrorMessage("[InvSee] Something went wrong... restored your inventory.");
+						info.Backup = new PlayerData(args.Player);
+						info.Backup.CopyCharacter(args.Player);
 					}
+
+					PlayerData data = TShock.CharacterDB.GetPlayerData(args.Player, acctid);
+					if (data == null)
+					{
+						args.Player.SendErrorMessage("{0}'s data not found!");
+						return;
+					}
+					data.RestoreCharacter(args.Player);
+					args.Player.SendSuccessMessage("[InvSee] Copied {0}'s inventory.", name);
+				}
+				catch (Exception ex)
+				{
+					// In case it fails, everything is restored
+					if (info.Backup != null)
+					{
+						info.Backup.RestoreCharacter(args.Player);
+						info.Backup = null;
+					}
+					Log.ConsoleError(ex.ToString());
+					args.Player.SendErrorMessage("[InvSee] Something went wrong... restored your inventory.");
 				}
 			}
 		}
