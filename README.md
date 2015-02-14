@@ -13,3 +13,5 @@ Inventories are automatically restored upon leaving. Crashes and connection loss
 
 ### Permissions ###
 `invsee.main` - Required to use the `invsee` command.
+
+`invsee.user` - Combine with the above to allow copying offline players (users).
