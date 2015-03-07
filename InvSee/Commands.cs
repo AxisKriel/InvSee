@@ -86,7 +86,7 @@ namespace InvSee
 					PlayerData data = TShock.CharacterDB.GetPlayerData(args.Player, acctid);
 					if (data == null)
 					{
-						args.Player.SendErrorMessage("{0}'s data not found!");
+						args.Player.SendErrorMessage("{0}'s data not found!", name);
 						return;
 					}
 					data.RestoreCharacter(args.Player);
@@ -100,7 +100,7 @@ namespace InvSee
 						info.Backup.RestoreCharacter(args.Player);
 						info.Backup = null;
 					}
-					Log.ConsoleError(ex.ToString());
+					TShock.Log.ConsoleError(ex.ToString());
 					args.Player.SendErrorMessage("[InvSee] Something went wrong... restored your inventory.");
 				}
 			}
