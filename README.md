@@ -2,7 +2,7 @@ InvSee
 ======
 [TShock](https://github.com/NyxStudios/TShock/) plugin. Utilizes SSC technology to copy a player's inventory.
 
-Current version: 1.0.0.1025
+Current version: 1.0.1.0307
 
 
 ### Commands ###
