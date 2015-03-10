@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using InvSee.Extensions;
 using Terraria;
 using TerrariaApi.Server;
@@ -11,8 +7,8 @@ using TShockAPI;
 namespace InvSee
 {
 	[ApiVersion(1, 17)]
-    public class PMain : TerrariaPlugin
-    {
+	public class PMain : TerrariaPlugin
+	{
 		public override string Author
 		{
 			get { return "Enerdy"; }
@@ -69,7 +65,7 @@ namespace InvSee
 					HelpDesc = new[]
 					{
 						"Replaces own inventory with target player's inventory.",
-						"Use '{0}invsee' to reset your inventory.".SFormat(TShock.Config.CommandSpecifier)
+						"Use '{0}invsee' to reset your inventory.".SFormat(TShockAPI.Commands.Specifier)
 					}
 				});
 		}
@@ -86,5 +82,5 @@ namespace InvSee
 				info.Restore(player);
 			}
 		}
-    }
+	}
 }

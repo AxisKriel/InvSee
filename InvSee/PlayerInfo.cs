@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TShockAPI;
+﻿using TShockAPI;
 
 namespace InvSee
 {
 	public class PlayerInfo
 	{
 		public PlayerData Backup { get; set; }
+
+		public string CopyingUserName { get; set; }
 
 		public PlayerInfo()
 		{
@@ -22,6 +20,7 @@ namespace InvSee
 
 			Backup.RestoreCharacter(player);
 			Backup = null;
+			CopyingUserName = "";
 			return true;
 		}
 	}
