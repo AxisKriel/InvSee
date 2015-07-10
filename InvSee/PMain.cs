@@ -6,7 +6,7 @@ using TShockAPI;
 
 namespace InvSee
 {
-	[ApiVersion(1, 17)]
+	[ApiVersion(1, 19)]
 	public class PMain : TerrariaPlugin
 	{
 		public override string Author
@@ -56,7 +56,14 @@ namespace InvSee
 			Action<Command> Add = (command) =>
 				{
 					TShockAPI.Commands.ChatCommands.RemoveAll(c =>
-						c.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase));
+						{
+							foreach (string s in c.Names)
+							{
+								if (command.Names.Contains(s))
+									return true;
+							}
+							return false;
+						});
 					TShockAPI.Commands.ChatCommands.Add(command);
 				};
 
@@ -65,7 +72,7 @@ namespace InvSee
 					HelpDesc = new[]
 					{
 						"Replaces own inventory with target player's inventory.",
-						"Use '{0}invsee' to reset your inventory.".SFormat(TShockAPI.Commands.Specifier)
+						String.Format("Use '{0}invsee' to reset your inventory.", TShockAPI.Commands.Specifier)
 					}
 				});
 		}

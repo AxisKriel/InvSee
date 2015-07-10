@@ -36,7 +36,7 @@ namespace InvSee
 			{
 				Regex regex = new Regex(@"^\w+ (?:-(s(?:ave)?)|(.+))$");
 				Match match = regex.Match(args.Message);
-				if (!string.IsNullOrWhiteSpace(match.Groups[1].Value))
+				if (!String.IsNullOrWhiteSpace(match.Groups[1].Value))
 				{
 					if (!args.Player.Group.HasPermission(Permissions.InvSeeSave))
 					{
@@ -44,7 +44,7 @@ namespace InvSee
 						return;
 					}
 
-					if (info.Backup == null || string.IsNullOrWhiteSpace(info.CopyingUserName))
+					if (info.Backup == null || String.IsNullOrWhiteSpace(info.CopyingUserName))
 						args.Player.SendErrorMessage("You are not copying any user!");
 					else
 					{
@@ -64,7 +64,7 @@ namespace InvSee
 								PlayerData playerData = args.Player.PlayerData;
 								TShock.CharacterDB.database.Query(
 									"UPDATE tsCharacter SET Health = @0, MaxHealth = @1, Mana = @2, MaxMana = @3, Inventory = @4, spawnX = @6, spawnY = @7, hair = @8, hairDye = @9, hairColor = @10, pantsColor = @11, shirtColor = @12, underShirtColor = @13, shoeColor = @14, hideVisuals = @15, skinColor = @16, eyeColor = @17, questsCompleted = @18 WHERE Account = @5;",
-									playerData.health, playerData.maxHealth, playerData.mana, playerData.maxMana, NetItem.ToString(playerData.inventory), player.UserID, player.TPlayer.SpawnX, player.TPlayer.SpawnY, player.TPlayer.hair, player.TPlayer.hairDye, TShock.Utils.EncodeColor(player.TPlayer.hairColor), TShock.Utils.EncodeColor(player.TPlayer.pantsColor), TShock.Utils.EncodeColor(player.TPlayer.shirtColor), TShock.Utils.EncodeColor(player.TPlayer.underShirtColor), TShock.Utils.EncodeColor(player.TPlayer.shoeColor), TShock.Utils.EncodeBitsByte(player.TPlayer.hideVisual), TShock.Utils.EncodeColor(player.TPlayer.skinColor), TShock.Utils.EncodeColor(player.TPlayer.eyeColor), player.TPlayer.anglerQuestsFinished);
+									playerData.health, playerData.maxHealth, playerData.mana, playerData.maxMana, String.Join("~", playerData.inventory), player.User.ID, player.TPlayer.SpawnX, player.TPlayer.SpawnY, player.TPlayer.hair, player.TPlayer.hairDye, TShock.Utils.EncodeColor(player.TPlayer.hairColor), TShock.Utils.EncodeColor(player.TPlayer.pantsColor), TShock.Utils.EncodeColor(player.TPlayer.shirtColor), TShock.Utils.EncodeColor(player.TPlayer.underShirtColor), TShock.Utils.EncodeColor(player.TPlayer.shoeColor), TShock.Utils.EncodeBoolArray(player.TPlayer.hideVisual), TShock.Utils.EncodeColor(player.TPlayer.skinColor), TShock.Utils.EncodeColor(player.TPlayer.eyeColor), player.TPlayer.anglerQuestsFinished);
 							}
 							catch (Exception ex)
 							{
@@ -110,8 +110,8 @@ namespace InvSee
 					}
 					else
 					{
-						acctid = players[0].UserID;
-						name = players[0].UserAccountName;
+						acctid = players[0].User == null ? -1 : players[0].User.ID;
+						name = players[0].User == null ? "" : players[0].User.Name;
 					}
 
 					try
