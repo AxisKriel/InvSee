@@ -6,7 +6,7 @@ using TShockAPI;
 
 namespace InvSee
 {
-	[ApiVersion(1, 19)]
+	[ApiVersion(1, 20)]
 	public class PMain : TerrariaPlugin
 	{
 		public override string Author
@@ -79,7 +79,7 @@ namespace InvSee
 
 		void OnLeave(LeaveEventArgs e)
 		{
-			if (e.Who < 0 || e.Who > Main.maxPlayers)
+			if (e.Who < 0 || e.Who > Main.maxNetPlayers)
 				return;
 
 			TSPlayer player = TShock.Players[e.Who];

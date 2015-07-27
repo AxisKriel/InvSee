@@ -10,11 +10,13 @@ namespace InvSee
 {
 	internal class Commands
 	{
+		private static string _tag = TShock.Utils.ColorTag("InvSee:", Color.Teal);
+
 		public static void DoInvSee(CommandArgs args)
 		{
 			if (!Main.ServerSideCharacter)
 			{
-				args.Player.SendErrorMessage("ServerSideCharacters must be enabled.");
+				args.Player.SendErrorMessage("{0} ServerSideCharacters must be enabled.", _tag);
 				return;
 			}
 
@@ -25,11 +27,11 @@ namespace InvSee
 				bool restored = info.Restore(args.Player);
 
 				if (restored)
-					args.Player.SendSuccessMessage("[InvSee] Restored your inventory.");
+					args.Player.SendSuccessMessage("{0} Restored your inventory.", _tag);
 				else
 				{
-					args.Player.SendInfoMessage("[InvSee] You are currently not seeing anyone's inventory.");
-					args.Player.SendInfoMessage("[InvSee] Use '{0}invsee <player name>' to begin.", TShockAPI.Commands.Specifier);
+					args.Player.SendInfoMessage("{0} You are currently not seeing anyone's inventory.", _tag);
+					args.Player.SendInfoMessage("{0} Use '{1}invsee <player name>' to begin.", _tag, TShockAPI.Commands.Specifier);
 				}
 			}
 			else
@@ -40,19 +42,19 @@ namespace InvSee
 				{
 					if (!args.Player.Group.HasPermission(Permissions.InvSeeSave))
 					{
-						args.Player.SendErrorMessage("You don't have the permission to change player inventories!");
+						args.Player.SendErrorMessage("{0} You don't have the permission to change player inventories!", _tag);
 						return;
 					}
 
 					if (info.Backup == null || String.IsNullOrWhiteSpace(info.CopyingUserName))
-						args.Player.SendErrorMessage("You are not copying any user!");
+						args.Player.SendErrorMessage("{0} You are not copying any user!", _tag);
 					else
 					{
 						User user = TShock.Users.GetUserByName(info.CopyingUserName);
 						TSPlayer player;
 						if (user == null)
 						{
-							args.Player.SendErrorMessage("Invalid user!");
+							args.Player.SendErrorMessage("{0} Invalid user!", _tag);
 							return;
 						}
 						else if ((player = TShock.Utils.FindPlayer(info.CopyingUserName).FirstOrDefault()) != null)
@@ -68,12 +70,12 @@ namespace InvSee
 							}
 							catch (Exception ex)
 							{
-								args.Player.SendErrorMessage("Command failed. Check logs for details.");
+								args.Player.SendErrorMessage("{0} Command failed. Check logs for details.", _tag);
 								TShock.Log.Error(ex.ToString());
 								return;
 							}
 						}
-						args.Player.SendInfoMessage("Saved changes made to {0}'s inventory.", user.Name);
+						args.Player.SendInfoMessage("{0} Saved changes made to {1}'s inventory.", _tag, user.Name);
 					}
 				}
 				else
@@ -87,14 +89,14 @@ namespace InvSee
 					{
 						if (!args.Player.Group.HasPermission(Permissions.InvSeeUser))
 						{
-							args.Player.SendErrorMessage("You can't copy users!");
+							args.Player.SendErrorMessage("{0} You can't copy users!", _tag);
 							return;
 						}
 
 						User user = TShock.Users.GetUserByName(playerName);
 						if (user == null)
 						{
-							args.Player.SendErrorMessage("Invalid player or account '{0}'!", playerName);
+							args.Player.SendErrorMessage("{0} Invalid player or account '{1}'!", _tag, playerName);
 							return;
 						}
 						else
@@ -119,7 +121,7 @@ namespace InvSee
 						PlayerData data = TShock.CharacterDB.GetPlayerData(args.Player, acctid);
 						if (data == null)
 						{
-							args.Player.SendErrorMessage("{0}'s data not found!", name);
+							args.Player.SendErrorMessage("{0} {1}'s data not found!", _tag, name);
 							return;
 						}
 
@@ -132,7 +134,7 @@ namespace InvSee
 
 						info.CopyingUserName = name;
 						data.RestoreCharacter(args.Player);
-						args.Player.SendSuccessMessage("[InvSee] Copied {0}'s inventory.", name);
+						args.Player.SendSuccessMessage("{0} Copied {1}'s inventory.", _tag, name);
 					}
 					catch (Exception ex)
 					{
@@ -144,7 +146,7 @@ namespace InvSee
 							info.Backup = null;
 						}
 						TShock.Log.ConsoleError(ex.ToString());
-						args.Player.SendErrorMessage("[InvSee] Something went wrong... restored your inventory.");
+						args.Player.SendErrorMessage("{0} Something went wrong... restored your inventory.", _tag);
 					}
 				}
 			}

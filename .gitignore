@@ -6,6 +6,8 @@ InvSee/bin/HttpServer.dll
 InvSee/bin/Newtonsoft.Json.dll
 InvSee/bin/Mono.Data.Sqlite.dll
 InvSee/bin/Mysql.Data.dll
+InvSee/bin/BCrypt.Net.dll
+InvSee/bin/Steamworks.NET.dll
 
 # User-specific files
 *.xml
