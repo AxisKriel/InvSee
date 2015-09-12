@@ -3,6 +3,7 @@ using InvSee.Extensions;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
+using TShockAPI.Hooks;
 
 namespace InvSee
 {
@@ -29,6 +30,8 @@ namespace InvSee
 			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version; }
 		}
 
+		public static string Tag = TShock.Utils.ColorTag("InvSee:", Color.Teal);
+
 		public PMain(Main game)
 			: base(game)
 		{
@@ -42,6 +45,7 @@ namespace InvSee
 			{
 				ServerApi.Hooks.GameInitialize.Deregister(this, OnInitialize);
 				ServerApi.Hooks.ServerLeave.Deregister(this, OnLeave);
+				PlayerHooks.PlayerLogout -= OnLogout;
 			}
 		}
 
@@ -49,6 +53,7 @@ namespace InvSee
 		{
 			ServerApi.Hooks.GameInitialize.Register(this, OnInitialize);
 			ServerApi.Hooks.ServerLeave.Register(this, OnLeave);
+			PlayerHooks.PlayerLogout += OnLogout;
 		}
 
 		void OnInitialize(EventArgs e)
@@ -72,7 +77,7 @@ namespace InvSee
 					HelpDesc = new[]
 					{
 						"Replaces own inventory with target player's inventory.",
-						String.Format("Use '{0}invsee' to reset your inventory.", TShockAPI.Commands.Specifier)
+						$"Use '{TShockAPI.Commands.Specifier}invsee' to reset your inventory."
 					}
 				});
 		}
@@ -88,6 +93,14 @@ namespace InvSee
 				PlayerInfo info = player.GetPlayerInfo();
 				info.Restore(player);
 			}
+		}
+
+		void OnLogout(PlayerLogoutEventArgs e)
+		{
+			if (e.Player == null || !e.Player.Active || !e.Player.RealPlayer)
+				return;
+
+			e.Player.GetPlayerInfo().Restore(e.Player);
 		}
 	}
 }

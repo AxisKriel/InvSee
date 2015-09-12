@@ -10,13 +10,11 @@ namespace InvSee
 {
 	internal class Commands
 	{
-		private static string _tag = TShock.Utils.ColorTag("InvSee:", Color.Teal);
-
 		public static void DoInvSee(CommandArgs args)
 		{
 			if (!Main.ServerSideCharacter)
 			{
-				args.Player.SendErrorMessage("{0} ServerSideCharacters must be enabled.", _tag);
+				args.Player.PluginErrorMessage("ServerSideCharacters must be enabled.");
 				return;
 			}
 
@@ -27,34 +25,34 @@ namespace InvSee
 				bool restored = info.Restore(args.Player);
 
 				if (restored)
-					args.Player.SendSuccessMessage("{0} Restored your inventory.", _tag);
+					args.Player.PluginSuccessMessage("Restored your inventory.");
 				else
 				{
-					args.Player.SendInfoMessage("{0} You are currently not seeing anyone's inventory.", _tag);
-					args.Player.SendInfoMessage("{0} Use '{1}invsee <player name>' to begin.", _tag, TShockAPI.Commands.Specifier);
+					args.Player.PluginInfoMessage("You are currently not seeing anyone's inventory.");
+					args.Player.PluginInfoMessage($"Use '{TShockAPI.Commands.Specifier}invsee <player name>' to begin.");
 				}
 			}
 			else
 			{
-				Regex regex = new Regex(@"^\w+ (?:-(s(?:ave)?)|(.+))$");
+				Regex regex = new Regex(@"^\w+ (?:-(?<Saving>s(?:ave)?)|""?(?<Name>.+?)""?)$");
 				Match match = regex.Match(args.Message);
-				if (!String.IsNullOrWhiteSpace(match.Groups[1].Value))
+				if (!String.IsNullOrWhiteSpace(match.Groups["Saving"].Value))
 				{
 					if (!args.Player.Group.HasPermission(Permissions.InvSeeSave))
 					{
-						args.Player.SendErrorMessage("{0} You don't have the permission to change player inventories!", _tag);
+						args.Player.PluginErrorMessage("You don't have the permission to change player inventories!");
 						return;
 					}
 
 					if (info.Backup == null || String.IsNullOrWhiteSpace(info.CopyingUserName))
-						args.Player.SendErrorMessage("{0} You are not copying any user!", _tag);
+						args.Player.PluginErrorMessage("You are not copying any user!");
 					else
 					{
 						User user = TShock.Users.GetUserByName(info.CopyingUserName);
 						TSPlayer player;
 						if (user == null)
 						{
-							args.Player.SendErrorMessage("{0} Invalid user!", _tag);
+							args.Player.PluginErrorMessage("Invalid user!");
 							return;
 						}
 						else if ((player = TShock.Utils.FindPlayer(info.CopyingUserName).FirstOrDefault()) != null)
@@ -70,17 +68,17 @@ namespace InvSee
 							}
 							catch (Exception ex)
 							{
-								args.Player.SendErrorMessage("{0} Command failed. Check logs for details.", _tag);
+								args.Player.PluginErrorMessage("Command failed. Check logs for details.");
 								TShock.Log.Error(ex.ToString());
 								return;
 							}
 						}
-						args.Player.SendInfoMessage("{0} Saved changes made to {1}'s inventory.", _tag, user.Name);
+						args.Player.PluginInfoMessage($"Saved changes made to {user.Name}'s inventory.");
 					}
 				}
 				else
 				{
-					string playerName = match.Groups[2].Value;
+					string playerName = match.Groups["Name"].Value;
 
 					int acctid = 0;
 					string name = "";
@@ -89,14 +87,14 @@ namespace InvSee
 					{
 						if (!args.Player.Group.HasPermission(Permissions.InvSeeUser))
 						{
-							args.Player.SendErrorMessage("{0} You can't copy users!", _tag);
+							args.Player.PluginErrorMessage("You can't copy users!");
 							return;
 						}
 
 						User user = TShock.Users.GetUserByName(playerName);
 						if (user == null)
 						{
-							args.Player.SendErrorMessage("{0} Invalid player or account '{1}'!", _tag, playerName);
+							args.Player.PluginErrorMessage($"Invalid player or account '{playerName}'!");
 							return;
 						}
 						else
@@ -107,13 +105,13 @@ namespace InvSee
 					}
 					else if (players.Count > 1)
 					{
-						TShock.Utils.SendMultipleMatchError(args.Player, players);
+						TShock.Utils.SendMultipleMatchError(args.Player, players.Select(p => p.Name));
 						return;
 					}
 					else
 					{
-						acctid = players[0].User == null ? -1 : players[0].User.ID;
-						name = players[0].User == null ? "" : players[0].User.Name;
+						acctid = players[0].User?.ID ?? -1;
+						name = players[0].User?.Name ?? "";
 					}
 
 					try
@@ -121,7 +119,7 @@ namespace InvSee
 						PlayerData data = TShock.CharacterDB.GetPlayerData(args.Player, acctid);
 						if (data == null)
 						{
-							args.Player.SendErrorMessage("{0} {1}'s data not found!", _tag, name);
+							args.Player.PluginErrorMessage($"{name}'s data not found!");
 							return;
 						}
 
@@ -134,7 +132,7 @@ namespace InvSee
 
 						info.CopyingUserName = name;
 						data.RestoreCharacter(args.Player);
-						args.Player.SendSuccessMessage("{0} Copied {1}'s inventory.", _tag, name);
+						args.Player.PluginSuccessMessage($"Copied {name}'s inventory.");
 					}
 					catch (Exception ex)
 					{
@@ -146,7 +144,7 @@ namespace InvSee
 							info.Backup = null;
 						}
 						TShock.Log.ConsoleError(ex.ToString());
-						args.Player.SendErrorMessage("{0} Something went wrong... restored your inventory.", _tag);
+						args.Player.PluginErrorMessage("Something went wrong... restored your inventory.");
 					}
 				}
 			}
