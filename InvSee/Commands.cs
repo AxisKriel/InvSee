@@ -80,7 +80,7 @@ namespace InvSee
 				{
 					string playerName = match.Groups["Name"].Value;
 
-					int acctid = 0;
+					PlayerData data;
 					string name = "";
 					var players = TShock.Utils.FindPlayer(playerName);
 					if (players.Count == 0)
@@ -99,7 +99,7 @@ namespace InvSee
 						}
 						else
 						{
-							acctid = user.ID;
+							data = TShock.CharacterDB.GetPlayerData(args.Player, user.ID);
 							name = user.Name;
 						}
 					}
@@ -110,13 +110,12 @@ namespace InvSee
 					}
 					else
 					{
-						acctid = players[0].User?.ID ?? -1;
+						data = players[0].PlayerData;
 						name = players[0].User?.Name ?? "";
 					}
 
 					try
 					{
-						PlayerData data = TShock.CharacterDB.GetPlayerData(args.Player, acctid);
 						if (data == null)
 						{
 							args.Player.PluginErrorMessage($"{name}'s data not found!");
