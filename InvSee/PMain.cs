@@ -7,7 +7,7 @@ using TShockAPI.Hooks;
 
 namespace InvSee
 {
-	[ApiVersion(1, 22)]
+	[ApiVersion(1, 23)]
 	public class PMain : TerrariaPlugin
 	{
 		public override string Author

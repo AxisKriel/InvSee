@@ -5,11 +5,11 @@ namespace InvSee.Extensions
 {
 	public static class TSPlayerExtensions
 	{
-		private static ConditionalWeakTable<TSPlayer, PlayerInfo> data = new ConditionalWeakTable<TSPlayer, PlayerInfo>();
-
 		public static PlayerInfo GetPlayerInfo(this TSPlayer player)
 		{
-			return data.GetOrCreateValue(player);
+			if (!player.ContainsData("invsee"))
+				player.SetData("invsee", new PlayerInfo());
+			return player.GetData<PlayerInfo>("invsee");
 		}
 
 		public static void PluginMessage(this TSPlayer player, string message, Color color)
