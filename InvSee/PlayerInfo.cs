@@ -4,6 +4,8 @@ namespace InvSee
 {
 	public class PlayerInfo
 	{
+		public const string KEY = "InvSee_Data";
+
 		public PlayerData Backup { get; set; }
 
 		public string CopyingUserName { get; set; }

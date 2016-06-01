@@ -7,9 +7,9 @@ namespace InvSee.Extensions
 	{
 		public static PlayerInfo GetPlayerInfo(this TSPlayer player)
 		{
-			if (!player.ContainsData("invsee"))
-				player.SetData("invsee", new PlayerInfo());
-			return player.GetData<PlayerInfo>("invsee");
+			if (!player.ContainsData(PlayerInfo.KEY))
+				player.SetData(PlayerInfo.KEY, new PlayerInfo());
+			return player.GetData<PlayerInfo>(PlayerInfo.KEY);
 		}
 
 		public static void PluginMessage(this TSPlayer player, string message, Color color)
