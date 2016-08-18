@@ -24,8 +24,10 @@ namespace InvSee
             {
                 bool restored = info.Restore(args.Player);
 
-                if (restored)
-                    args.Player.PluginSuccessMessage("Restored your inventory.");
+                if (args.Player.Dead)
+                    args.Player.PluginErrorMessage("You cannot restore your inventory while dead.");
+                else if (restored)
+                    args.Player.PluginErrorMessage("Inventory has been restored.");
                 else
                 {
                     args.Player.PluginInfoMessage("You are currently not seeing anyone's inventory.");
