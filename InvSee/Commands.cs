@@ -76,7 +76,7 @@ namespace InvSee
                             }
                             catch (Exception ex)
                             {
-                                args.Player.PluginErrorMessage("Command failed. Check logs for details.");
+                                args.Player.PluginErrorMessage("Unable to save the player's inventory.");
                                 TShock.Log.Error(ex.ToString());
                                 return;
                             }
