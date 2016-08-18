@@ -90,6 +90,7 @@ namespace InvSee
 
                     PlayerData data;
                     string name = "";
+                    int userid = 0;
                     var players = TShock.Utils.FindPlayer(playerName);
                     if (players.Count == 0)
                     {
@@ -140,6 +141,7 @@ namespace InvSee
                         }
 
                         info.CopyingUserName = name;
+                        info.UserID = userid;
                         data.RestoreCharacter(args.Player);
                         args.Player.PluginSuccessMessage($"Copied {name}'s inventory.");
                     }
