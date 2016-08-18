@@ -119,10 +119,11 @@ namespace InvSee
                     }
                     else
                     {
+                        players[0].PlayerData.CopyCharacter(players[0]);
                         data = players[0].PlayerData;
                         name = players[0].User?.Name ?? "";
+                        userid = players[0].User.ID;
                     }
-
                     try
                     {
                         if (data == null)
