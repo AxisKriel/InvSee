@@ -109,6 +109,7 @@ namespace InvSee
                         {
                             data = TShock.CharacterDB.GetPlayerData(args.Player, user.ID);
                             name = user.Name;
+                            userid = user.ID;
                         }
                     }
                     else if (players.Count > 1)
