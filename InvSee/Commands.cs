@@ -124,10 +124,15 @@ namespace InvSee
 					}
 					else
 					{
+						if(players[0].User == null)
+						{
+							args.Player.PluginErrorMessage($"Invalid player or account '{playerName}'!");
+							return;
+						}
+						userid = players[0].User.ID;
 						players[0].PlayerData.CopyCharacter(players[0]);
 						data = players[0].PlayerData;
 						name = players[0].User?.Name ?? "";
-						userid = players[0].User.ID;
 					}
 					try
 					{
