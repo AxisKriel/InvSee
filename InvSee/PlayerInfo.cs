@@ -9,6 +9,7 @@ namespace InvSee
 		public PlayerData Backup { get; set; }
 
 		public string CopyingUserName { get; set; }
+		public int UserID { get; set; }
 
 		public PlayerInfo()
 		{
