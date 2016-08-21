@@ -10,6 +10,8 @@ namespace InvSee
 {
 	internal class Commands
 	{
+		private static readonly string _cp = TShockAPI.Commands.Specifier;
+
 		public static void DoInvSee(CommandArgs args)
 		{
 			if (!Main.ServerSideCharacter)
@@ -33,7 +35,7 @@ namespace InvSee
 				else
 				{
 					args.Player.PluginInfoMessage("You are currently not seeing anyone's inventory.");
-					args.Player.PluginInfoMessage($"Use '{TShockAPI.Commands.Specifier}invsee <player name>' to begin.");
+					args.Player.PluginInfoMessage($"Use '{_cp}invsee <player name>' to begin.");
 				}
 			}
 			else
@@ -64,7 +66,8 @@ namespace InvSee
 							// Fixes Invsee Saving on Active Players
 							args.Player.PlayerData.CopyCharacter(args.Player);
 							args.Player.PlayerData.RestoreCharacter(player);
-							TShock.Log.ConsoleInfo("[Online] {0} has modified {1}'s ({2}) inventory.", args.Player.Name, info.CopyingUserName, info.UserID);
+							TShock.Log.ConsoleInfo("[Online] {0} has modified {1}'s ({2}) inventory.",
+								args.Player.Name, info.CopyingUserName, info.UserID);
 						}
 						else
 						{
@@ -74,9 +77,16 @@ namespace InvSee
 								// We copy our character to make sure inventory is up to date before sending it.
 								args.Player.PlayerData.CopyCharacter(args.Player);
 								PlayerData playerData = args.Player.PlayerData;
-								//TShock.CharacterDB.database.Query("UPDATE tsCharacter SET Health = @0, MaxHealth = @1, Mana = @2, MaxMana = @3, Inventory = @4, spawnX = @6, spawnY = @7, hair = @8, hairDye = @9, hairColor = @10, pantsColor = @11, shirtColor = @12, underShirtColor = @13, shoeColor = @14, hideVisuals = @15, skinColor = @16, eyeColor = @17, questsCompleted = @18 WHERE Account = @5;", playerData.health, playerData.maxHealth, playerData.mana, playerData.maxMana, String.Join("~", playerData.inventory), info.UserID, player.TPlayer.SpawnX, player.TPlayer.SpawnY, player.TPlayer.hair, player.TPlayer.hairDye, TShock.Utils.EncodeColor(player.TPlayer.hairColor), TShock.Utils.EncodeColor(player.TPlayer.pantsColor), TShock.Utils.EncodeColor(player.TPlayer.shirtColor), TShock.Utils.EncodeColor(player.TPlayer.underShirtColor), TShock.Utils.EncodeColor(player.TPlayer.shoeColor), TShock.Utils.EncodeBoolArray(player.TPlayer.hideVisual), TShock.Utils.EncodeColor(player.TPlayer.skinColor), TShock.Utils.EncodeColor(player.TPlayer.eyeColor), player.TPlayer.anglerQuestsFinished);
-								TShock.CharacterDB.database.Query("UPDATE tsCharacter SET Health = @0, MaxHealth = @1, Mana = @2, MaxMana = @3, Inventory = @4 WHERE Account = @5;", playerData.health, playerData.maxHealth, playerData.mana, playerData.maxMana, String.Join("~", playerData.inventory), info.UserID);
-								TShock.Log.ConsoleInfo("[Offline] {0} has modified {1}'s ({2}) inventory.", args.Player.Name, info.CopyingUserName, info.UserID);
+
+								string query = @"UPDATE tsCharacter
+												 SET Health = @0, MaxHealth = @1, Mana = @2, MaxMana = @3,
+													 Inventory = @4
+												 WHERE Account = @5;";
+								TShock.CharacterDB.database.Query(query, playerData.health, playerData.maxHealth,
+									playerData.mana, playerData.maxMana, String.Join("~", playerData.inventory),
+									info.UserID);
+								TShock.Log.ConsoleInfo("[Offline] {0} has modified {1}'s ({2}) inventory.",
+									args.Player.Name, info.CopyingUserName, info.UserID);
 							}
 							catch (Exception ex)
 							{

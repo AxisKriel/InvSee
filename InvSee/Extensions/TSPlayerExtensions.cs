@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using TShockAPI;
+﻿using TShockAPI;
 
 namespace InvSee.Extensions
 {

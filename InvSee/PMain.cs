@@ -10,30 +10,17 @@ namespace InvSee
 	[ApiVersion(1, 23)]
 	public class PMain : TerrariaPlugin
 	{
-		public override string Author
-		{
-			get { return "Enerdy"; }
-		}
+		public override string Author => "Enerdy";
 
-		public override string Description
-		{
-			get { return "Utilizes SSC technology to temporarily copy a player's inventory."; }
-		}
+		public override string Description => "Utilizes SSC technology to temporarily copy a player's inventory.";
 
-		public override string Name
-		{
-			get { return "InvSee"; }
-		}
+		public override string Name => "InvSee";
 
-		public override Version Version
-		{
-			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version; }
-		}
+		public override Version Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
-		public static string Tag = TShock.Utils.ColorTag("InvSee:", Color.Teal);
+		public static string Tag => TShock.Utils.ColorTag("InvSee:", Color.Teal);
 
-		public PMain(Main game)
-			: base(game)
+		public PMain(Main game) : base(game)
 		{
 			// A lower order ensures commands are replaced properly
 			Order--;
@@ -59,27 +46,27 @@ namespace InvSee
 		void OnInitialize(EventArgs e)
 		{
 			Action<Command> Add = (command) =>
+			{
+				TShockAPI.Commands.ChatCommands.RemoveAll(c =>
 				{
-					TShockAPI.Commands.ChatCommands.RemoveAll(c =>
-						{
-							foreach (string s in c.Names)
-							{
-								if (command.Names.Contains(s))
-									return true;
-							}
-							return false;
-						});
-					TShockAPI.Commands.ChatCommands.Add(command);
-				};
+					foreach (string s in c.Names)
+					{
+						if (command.Names.Contains(s))
+							return true;
+					}
+					return false;
+				});
+				TShockAPI.Commands.ChatCommands.Add(command);
+			};
 
 			Add(new Command(Permissions.InvSee, Commands.DoInvSee, "invsee")
+			{
+				HelpDesc = new[]
 				{
-					HelpDesc = new[]
-					{
-						"Replaces own inventory with target player's inventory.",
-						$"Use '{TShockAPI.Commands.Specifier}invsee' to reset your inventory."
-					}
-				});
+					"Replaces own inventory with target player's inventory.",
+					$"Use '{TShockAPI.Commands.Specifier}invsee' to reset your inventory."
+				}
+			});
 		}
 
 		void OnLeave(LeaveEventArgs e)
