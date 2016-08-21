@@ -22,11 +22,13 @@ namespace InvSee
 
 			if (args.Parameters.Count < 1)
 			{
-				bool restored = info.Restore(args.Player);
-
 				if (args.Player.Dead)
+				{
 					args.Player.PluginErrorMessage("You cannot restore your inventory while dead.");
-				else if (restored)
+					return;
+				}
+				bool restored = info.Restore(args.Player);
+				if (restored)
 					args.Player.PluginErrorMessage("Inventory has been restored.");
 				else
 				{
