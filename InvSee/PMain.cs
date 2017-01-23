@@ -1,5 +1,6 @@
 ﻿using System;
 using InvSee.Extensions;
+using Microsoft.Xna.Framework;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
@@ -7,7 +8,7 @@ using TShockAPI.Hooks;
 
 namespace InvSee
 {
-	[ApiVersion(1, 25)]
+	[ApiVersion(2, 0)]
 	public class PMain : TerrariaPlugin
 	{
 		public override string Author => "Enerdy";
